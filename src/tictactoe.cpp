@@ -1,18 +1,17 @@
-#include "../headers/tictactoe.hpp"
+#include "../headers/Tictactoe.hpp"
 #include <iostream>
 TicTacToe::TicTacToe(){
 	//Generate move map and assign
 	is_host = true;
-	for(int i=0;i<GRID_SIZE*GRID_SIZE;i++){
+	is_connected = -1;
+	for(int i=0;i<_GRID_SIZE*_GRID_SIZE;i++){
 			MOVE_MAP[i][0] = i/3;
 			MOVE_MAP[i][1] = i%3;
 	}
 }
 
 void TicTacToe::start(){
-	//askTurn();
-	is_running = true;
-	bool placed = false;
+	bool is_running = true;
 	int winner;
 	askTurn();
 	while(is_running){
@@ -39,9 +38,9 @@ void TicTacToe::askTurn(){
 }
 void TicTacToe::displayGrid(){
 	std::cout << "-------------------------\n";
-	for(int i=0;i<GRID_SIZE;i++){
-		for(int j=0;j<GRID_SIZE;j++)
-			std::cout << grid[i][j] << "\t|";
+	for(int i=0;i<_GRID_SIZE;i++){
+		for(int j=0;j<_GRID_SIZE;j++)
+			std::cout << _grid[i][j] << "\t|";
 		std::cout << "\n-------------------------";
 		std::cout << std::endl;
 	}
@@ -60,10 +59,10 @@ void TicTacToe::toggleTurn(){
 		turn = YOU;
 }
 bool TicTacToe::placeMove(const unsigned short *position, bool check /*=false*/){
-	if(grid[position[0]][position[1]])
+	if(_grid[position[0]][position[1]])
 		return false;
 	if(!check)
-		grid[position[0]][position[1]] = turn;
+		_grid[position[0]][position[1]] = turn;
 	return true;
 }
 unsigned short TicTacToe::getMove(){
@@ -79,30 +78,30 @@ int TicTacToe::checkWinner(){
 	int countLR = 0;		//Left top to right bottom
 	int countRL = 0;		//Right Bottom to left top
 	int totalMoves = 0;
-	for (int i=0; i<GRID_SIZE; i++){
+	for (int i=0; i<_GRID_SIZE; i++){
 		//Row and column check block
 		int countRow = 0;
 		int countColumn = 0;
-		for (int j=0;j<GRID_SIZE;j++){
-			if (grid[i][j] != ' ')
+		for (int j=0;j<_GRID_SIZE;j++){
+			if (_grid[i][j] != ' ')
 				totalMoves++;
-			if (grid[i][j] == turn)
+			if (_grid[i][j] == turn)
 				countRow++;
-			if (grid[j][i] == turn)
+			if (_grid[j][i] == turn)
 				countColumn++;
 		}
-		if (countRow == GRID_SIZE || countColumn == GRID_SIZE)
+		if (countRow == _GRID_SIZE || countColumn == _GRID_SIZE)
 			return turn;
 
 		//Diagonal check block
-		if (grid[i][i] == turn)
+		if (_grid[i][i] == turn)
 			countLR++;
-		if (grid[GRID_SIZE-i-1][i] == turn)
+		if (_grid[_GRID_SIZE-i-1][i] == turn)
 			countRL++;
 	}
-	if (countRL == GRID_SIZE  || countLR == GRID_SIZE)
+	if (countRL == _GRID_SIZE  || countLR == _GRID_SIZE)
 		return turn;
-	if (totalMoves == GRID_SIZE*GRID_SIZE){
+	if (totalMoves == _GRID_SIZE*_GRID_SIZE){
 		return -1;
 	}
 	return -2;
@@ -117,4 +116,11 @@ void TicTacToe::displayWinner(int winner){
 	}
 	else
 		std::cout << "GAME DRAW" << std::endl;
+}
+void TicTacToe::clearGrid(){
+	for (int i=0;i<_GRID_SIZE;i++){
+		for (int j=0;j<_GRID_SIZE;j++){
+			_grid[i][j] = 0;
+		}
+	}
 }

@@ -2,16 +2,18 @@
 class TicTacToe
 {
 	private:
-		static const unsigned short GRID_SIZE = 3;
-		char grid[GRID_SIZE][GRID_SIZE] = {0};
-		bool is_running = false;
+		static const unsigned short _GRID_SIZE = 3;
+		char _grid[_GRID_SIZE][_GRID_SIZE] = {0};
 
 	protected:
 		//Game Variables
 		enum {YOU=(unsigned short)('X'), OPPONENT=(unsigned short)('O')};
-		unsigned short MOVE_MAP[GRID_SIZE*GRID_SIZE][2];
+		unsigned short MOVE_MAP[_GRID_SIZE*_GRID_SIZE][2];
 		char turn;
 		bool is_host = false;
+		int is_connected = false;	//0 --> Not connected
+									//1`--> Connected
+									//-1 -> Offline
 
 		//Game Methods
 		void clearGrid();
