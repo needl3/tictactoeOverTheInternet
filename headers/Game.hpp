@@ -5,7 +5,6 @@
 #include "gamestates/Offline.hpp"
 #include "gamestates/Online.hpp"
 #include "gamestates/Winner.hpp"
-#include "gamestates/Exit.hpp"
 #include "GameStates.hpp"
 
 #include <SFML/Graphics.hpp>

@@ -4,6 +4,6 @@ enum GameState {
 	Menu,
 	Offline,
 	Online,
-	Winner,
-	Exit
+	Exit,
+	Winner
 };

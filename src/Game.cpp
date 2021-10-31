@@ -9,12 +9,12 @@ Game::Game(){
 	_window.setFramerateLimit(_FRAMERATE);
 	_storeStates();
 
-	_currentState = Menu;
+	_currentState = SplashScreen;
 }
 
 void Game::_storeStates(){
 	CSplashScreen s_screen;
-	CMenu menu;
+	CMenu menu(_window, _events);
 	_GameMap.push_back(s_screen);
 	_GameMap.push_back(menu);
 
@@ -39,7 +39,7 @@ void Game::_renderState(){
 				_currentState = GameState::Menu;	//Advance to menu after splashscreen animation ends
 			break;
 		case Menu:
-			std::any_cast<CMenu>(&_GameMap[_currentState])->render(_window);
+			std::any_cast<CMenu>(&_GameMap[_currentState])->render();
 			break;
 		case Offline:
 			std::any_cast<COffline>(&_GameMap[_currentState])->render(_window);
@@ -49,9 +49,6 @@ void Game::_renderState(){
 			break;
 		case Winner:
 			std::any_cast<CWinner>(&_GameMap[_currentState])->render(_window);
-			break;
-		case Exit:
-			std::any_cast<CExit>(&_GameMap[_currentState])->render(_window);
 			break;
 		default:
 			std::cout << "No renderer..." << std::endl;
@@ -69,7 +66,7 @@ void Game::_handleInputs(){
 		case sf::Event::MouseButtonPressed:
 			switch(_currentState){
 				case Menu:
-					_currentState = std::any_cast<CMenu>(&_GameMap[_currentState])->handleInput(_events);
+					_currentState = std::any_cast<CMenu>(&_GameMap[_currentState])->handleInput();
 					if(_currentState == Offline)
 						ttt = new TicTacToe;
 					else if(_currentState == Online)
@@ -85,7 +82,7 @@ void Game::_handleInputs(){
 					std::any_cast<CWinner>(&_GameMap[_currentState])->handleInput(_events);
 					break;
 				case Exit:
-					std::any_cast<CExit>(&_GameMap[_currentState])->handleInput(_events);
+					_window.close();
 					break;
 				default:
 					std::cout << "No handler";
