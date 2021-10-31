@@ -1,7 +1,7 @@
 #include "../headers/TictactoeOnline.hpp"
 
 TicTacToeOnline::TicTacToeOnline(){
-	
+	std::cout << _establishConnection();
 }
 TicTacToeOnline::~TicTacToeOnline(){
 	//SEND _Socket disconnect signal
@@ -14,11 +14,12 @@ bool TicTacToeOnline::_establishConnection(bool host /*= false*/){
 		std::cout << "Do you want to host the game?(Y/N)";
 		std::cin >> will_host;
 	}
-	is_host = true ? (will_host == 'y') : false;
-	
+
+	is_host = (will_host == 'y');
+
 	std::string host_url;
 	int host_port;
-	if (!host){
+	if (!is_host){
 		do{
 			std::cout << "Enter remote host URL: ";
 			std::cin >> host_url;
@@ -39,7 +40,7 @@ bool TicTacToeOnline::_establishConnection(bool host /*= false*/){
 	}
 	return true;
 }
-unsigned short TicTacToeOnline::_getMove(){
+unsigned short TicTacToeOnline::getMove(){
 	unsigned short move=0;
 	if (turn == YOU){
 		while(move < 1 or move >9){
@@ -52,7 +53,7 @@ unsigned short TicTacToeOnline::_getMove(){
 	}
 	return move;
 }
-void TicTacToeOnline::_askTurn(){
+void TicTacToeOnline::askTurn(){
 	char opt;
 	if (!is_host){
 		turn = _waitForResponse();

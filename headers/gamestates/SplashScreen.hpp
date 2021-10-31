@@ -5,11 +5,12 @@
 
 class CSplashScreen{
 	private:
+		const unsigned short animation_constant = 4;
+
 		sf::Text _splash_text;
 		sf::Font _splash_font;
 		sf::SoundBuffer *_s_buffer = new sf::SoundBuffer;
 		sf::Sound *_s_sound = new sf::Sound;
-		const unsigned short animation_constant = 4;
 		std::string _e_splash_string = "T  I  C  T  A  C  T  O  E",
 					_j_font = "assets/fonts/japanese.ttf",
 					_e_font = "assets/fonts/english.ttf",
@@ -37,7 +38,7 @@ class CSplashScreen{
 			_splash_text.setString(_e_splash_string);
 			_splash_text.setFont(_splash_font);
 			_splash_text.setCharacterSize(100);
-			_splash_text.setPosition(_WIDTH*0.25, _HEIGHT*0.4);
+			_splash_text.setPosition(_WIDTH*0.2, _HEIGHT*0.3);
 
 			window.draw(_splash_text);
 			return _setTransparency();
@@ -57,6 +58,8 @@ class CSplashScreen{
 				_opacity-=animation_constant;
 
 			if(_reached_peak_brightness && _opacity <= 0){
+				delete _s_sound;
+				delete _s_buffer;
 				_sound_played = false;
 				return true;
 			}

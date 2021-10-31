@@ -42,7 +42,7 @@ FINALEXE = ttt
 
 FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -lsfml-network
 
-CFLAGS = -g
+CFLAGS = -g -Wall
 
 build:
 	$(COMPILER) $(CFLAGS) $(SRC_FILES) -o $(BIN_DIR)/$(FINALEXE) $(FLAGS)

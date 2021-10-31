@@ -18,11 +18,14 @@ class TicTacToeOnline:public TicTacToe{
 		~TicTacToeOnline();
 	
 	private:
-		void _askTurn();
 		void _sendMove(unsigned short);
 
 		bool _establishConnection(bool host = false);
 
-		unsigned short _getMove();
 		unsigned short _waitForResponse();
+		
+
+		//Overloading functions
+		void askTurn();
+		unsigned short getMove();
 };
