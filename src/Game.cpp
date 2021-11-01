@@ -88,5 +88,8 @@ void Game::_handleInputs(){
 					std::cout << "No handler";
 			}
 			break;
+		case sf::Event::Resized:
+			_window.setSize(sf::Vector2u(_events.size.width, _events.size.height));
+			break;
 	}
 }
