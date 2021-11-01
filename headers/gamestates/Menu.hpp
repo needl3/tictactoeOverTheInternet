@@ -46,13 +46,8 @@ class CMenu{
 
 			_WIDTH = _window->getSize().x;
 			_HEIGHT = _window->getSize().y;
-
-//------------------------------------------------------------------
-			// TODO FIX SPRITE WHITE LOADING ISSUE
-//------------------------------------------------------------------
-
+			
 			_background_texture.loadFromFile("assets/pictures/background.jpg");
-			_background_sprite.setTexture(_background_texture);
 
 			_s_buffer_main->loadFromFile("assets/audio/theme.wav");
 			_s_sound_main->setBuffer(*_s_buffer_main);
@@ -106,7 +101,8 @@ class CMenu{
 
 			_updateEntities();
 
-//			_window->draw(_background_sprite);
+			_background_sprite.setTexture(_background_texture);
+			_window->draw(_background_sprite);
 
 			for(int i=_TITLE; i <= _EXIT; i++){
 				_rect_obj.setSize(_items[i].r_size);
