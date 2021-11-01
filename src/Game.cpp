@@ -7,17 +7,19 @@ Game::Game(){
 
 	_window.create(sf::VideoMode(_WIDTH,_HEIGHT), "TicTacToe");
 	_window.setFramerateLimit(_FRAMERATE);
+
 	_storeStates();
 
-	_currentState = SplashScreen;
+	_currentState = Offline;
 }
 
 void Game::_storeStates(){
 	CSplashScreen s_screen;
 	CMenu menu(_window, _events);
+	COffline offline(_window, _events);
 	_GameMap.push_back(s_screen);
 	_GameMap.push_back(menu);
-
+	_GameMap.push_back(offline);
 }
 
 bool Game::isGameRunning(){
@@ -42,13 +44,13 @@ void Game::_renderState(){
 			std::any_cast<CMenu>(&_GameMap[_currentState])->render();
 			break;
 		case Offline:
-			std::any_cast<COffline>(&_GameMap[_currentState])->render(_window);
+			std::any_cast<COffline>(&_GameMap[_currentState])->render();
 			break;
 		case Online:
-			std::any_cast<COnline>(&_GameMap[_currentState])->render(_window);
+			std::any_cast<COnline>(&_GameMap[_currentState])->render();
 			break;
 		case Winner:
-			std::any_cast<CWinner>(&_GameMap[_currentState])->render(_window);
+			std::any_cast<CWinner>(&_GameMap[_currentState])->render();
 			break;
 		default:
 			std::cout << "No renderer..." << std::endl;
@@ -67,19 +69,15 @@ void Game::_handleInputs(){
 			switch(_currentState){
 				case Menu:
 					_currentState = std::any_cast<CMenu>(&_GameMap[_currentState])->handleInput();
-					if(_currentState == Offline)
-						ttt = new TicTacToe;
-					else if(_currentState == Online)
-						ttt =  new TicTacToeOnline;
 					break;
 				case Offline:
-					std::any_cast<COffline>(&_GameMap[_currentState])->handleInput(_events);
+					_currentState = std::any_cast<COffline>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Online:
-					std::any_cast<COnline>(&_GameMap[_currentState])->handleInput(_events);
+					std::any_cast<COnline>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Winner:
-					std::any_cast<CWinner>(&_GameMap[_currentState])->handleInput(_events);
+					std::any_cast<CWinner>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Exit:
 					_window.close();

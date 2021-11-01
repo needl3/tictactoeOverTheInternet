@@ -3,9 +3,9 @@ class TicTacToe
 {
 	private:
 		static const unsigned short _GRID_SIZE = 3;
-		char _grid[_GRID_SIZE][_GRID_SIZE] = {0};
 
 	protected:
+		char _grid[_GRID_SIZE][_GRID_SIZE] = {0};
 		//Game Variables
 		enum {YOU=(unsigned short)('X'), OPPONENT=(unsigned short)('O')};
 		unsigned short MOVE_MAP[_GRID_SIZE*_GRID_SIZE][2];

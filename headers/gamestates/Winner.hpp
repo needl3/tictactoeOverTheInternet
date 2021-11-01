@@ -3,6 +3,9 @@
 class CWinner
 {
 public:
-	void handleInput(sf::Event& event){std::cout << "Menu";}
-	void render(sf::RenderWindow& window){}
+	CWinner(sf::RenderWindow& window, sf::Event& event){
+		
+	}
+	void handleInput(){std::cout << "Menu";}
+	void render(){}
 };

@@ -93,42 +93,6 @@ class CMenu{
 			_items[_EXIT].r_position = sf::Vector2f(_WIDTH*0.8, _HEIGHT*0.8);
 			_items[_EXIT].label = "EXIT";
 		}
-		void _updateFace(_FaceItem& current_face){
-			current_face.rotation_angle+=current_face.rotation_rate;
-			current_face.position_x+=current_face.x_rate;
-			current_face.position_y+=current_face.y_rate;
-
-			//Change face if previous face is out of window area and if it has previously been inside view
-			if(((current_face.position_x > _WIDTH+current_face.texture.getSize().x or current_face.position_y > _HEIGHT+current_face.texture.getSize().y))){
-				int sign = rand()%2;
-
-				current_face.position_x = (rand()%(int)_WIDTH)-current_face.texture.getSize().x;
-				current_face.position_y = sign*_HEIGHT+(pow(-1,sign+1))*current_face.texture.getSize().y;
-
-				current_face.x_rate = rand()%5+1;
-				current_face.y_rate = pow(-1,sign)*(rand()%4+1);
-
-				current_face.rotation_rate = rand()%4+1;
-
-				_current_face = (_current_face+1)%3;
-			}
-		}
-		void _updateEntities(){
-			_WIDTH = _window->getSize().x;
-			_HEIGHT = _window->getSize().y;
-
-			if(!(_s_sound_main->getStatus() == sf::Sound::Playing))
-				_s_sound_main->play();
-
-			_background_sprite.setTexture(_background_texture);
-
-			_updateFace(_face[_current_face]);
-
-			_face_sprite.setTexture(_face[_current_face].texture);
-			_face_sprite.setPosition(_face[_current_face].position_x, _face[_current_face].position_y);
-			_face_sprite.setRotation(_face[_current_face].rotation_angle);
-
-		}
 		GameState handleInput(){
 			if(_event->type==sf::Event::MouseButtonPressed){
 				for(int i=_OFFLINE; i <= _EXIT; i++){
@@ -190,5 +154,42 @@ class CMenu{
 
 				_window->draw(_text_obj);
 			}
+		}
+	private:
+		void _updateFace(_FaceItem& current_face){
+			current_face.rotation_angle+=current_face.rotation_rate;
+			current_face.position_x+=current_face.x_rate;
+			current_face.position_y+=current_face.y_rate;
+
+			//Change face if previous face is out of window area and if it has previously been inside view
+			if(((current_face.position_x > _WIDTH+current_face.texture.getSize().x or current_face.position_y > _HEIGHT+current_face.texture.getSize().y))){
+				int sign = rand()%2;
+
+				current_face.position_x = (rand()%(int)_WIDTH)-current_face.texture.getSize().x;
+				current_face.position_y = sign*_HEIGHT+(pow(-1,sign+1))*current_face.texture.getSize().y;
+
+				current_face.x_rate = rand()%5+1;
+				current_face.y_rate = pow(-1,sign)*(rand()%4+1);
+
+				current_face.rotation_rate = rand()%4+1;
+
+				_current_face = (_current_face+1)%3;
+			}
+		}
+		void _updateEntities(){
+			_WIDTH = _window->getSize().x;
+			_HEIGHT = _window->getSize().y;
+
+			if(!(_s_sound_main->getStatus() == sf::Sound::Playing))
+				_s_sound_main->play();
+
+			_background_sprite.setTexture(_background_texture);
+
+			_updateFace(_face[_current_face]);
+
+			_face_sprite.setTexture(_face[_current_face].texture);
+			_face_sprite.setPosition(_face[_current_face].position_x, _face[_current_face].position_y);
+			_face_sprite.setRotation(_face[_current_face].rotation_angle);
+
 		}
 };
