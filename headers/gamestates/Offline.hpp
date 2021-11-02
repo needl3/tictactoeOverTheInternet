@@ -17,13 +17,13 @@ class COffline: public TicTacToe{
 		sf::Text _text;
 		sf::Font _txt_font;
 
-		enum _itemBox {OPPONENT, YOU, GRID, CONNECTION};
+		enum _itemBox {gOPPONENT, gYOU, GRID, CONNECTION};
 
 		struct {
 			sf::RectangleShape rect_shape;
 			float posX, posY;
 			float sizeX, sizeY;
-			std::string stat1, stat2;
+			std::string stat1, stat2, label;
 		} _item[4];
 
 		unsigned int _WIDTH, _HEIGHT;
@@ -91,35 +91,55 @@ class COffline: public TicTacToe{
 			_item[CONNECTION].posX = (_WIDTH-_item[CONNECTION].sizeX)/2.0f;
 			_item[CONNECTION].posY = (_HEIGHT-_item[CONNECTION].sizeY);
 
-			_item[OPPONENT].sizeX = (_WIDTH-_item[GRID].sizeX)/3.0f;
-			_item[OPPONENT].sizeY = _item[GRID].sizeY/4.0f;
-			_item[OPPONENT].posX = (_WIDTH-2*_item[OPPONENT].sizeX-_item[GRID].sizeX)/4.0f;
-			_item[OPPONENT].posY = _item[GRID].posY+_item[GRID].sizeY/2.7f;
-			_item[OPPONENT].stat1 = "CONSPIRING";
-			_item[OPPONENT].stat2 = "WAITING";
+			_item[gOPPONENT].sizeX = (_WIDTH-_item[GRID].sizeX)/3.0f;
+			_item[gOPPONENT].sizeY = _item[GRID].sizeY/5.0f;
+			_item[gOPPONENT].posX = (_WIDTH-2*_item[gOPPONENT].sizeX-_item[GRID].sizeX)/4.0f;
+			_item[gOPPONENT].posY = _item[GRID].posY+_item[GRID].sizeY/2.7f;
+			_item[gOPPONENT].stat1 = "CONSPIRING";
+			_item[gOPPONENT].stat2 = "WAITING";
+			_item[gOPPONENT].label = "OPPONENT";
 
-			_item[YOU].sizeX = _item[OPPONENT].sizeX;
-			_item[YOU].sizeY = _item[OPPONENT].sizeY;
-			_item[YOU].posX = _WIDTH - _item[OPPONENT].posX - _item[OPPONENT].sizeX;
-			_item[YOU].posY = _item[OPPONENT].posY;
-			_item[YOU].stat1 = "CONSPIRING";
-			_item[YOU].stat2 = "WAITING";
+			_item[gYOU].sizeX = _item[gOPPONENT].sizeX;
+			_item[gYOU].sizeY = _item[gOPPONENT].sizeY;
+			_item[gYOU].posX = _WIDTH - _item[gOPPONENT].posX - _item[gOPPONENT].sizeX;
+			_item[gYOU].posY = _item[gOPPONENT].posY;
+			_item[gYOU].stat1 = "CONSPIRING";
+			_item[gYOU].stat2 = "WAITING";
+			_item[gYOU].label = "YOU";
 		}
 		void _renderBackground(){
 			_background_sprite.setTexture(_background_texture);
 			_window->draw(_background_sprite);
 		}
 		void _renderStatus(){
-
-			//Background Base Rectangles
-			for(int i=OPPONENT;i<=YOU;i++){
+			unsigned short character_size = _item[gOPPONENT].sizeX/(_item[gOPPONENT].label.size());
+			//Background Base Rectangles and labels
+			for(int i=gOPPONENT;i<=gYOU;i++){
+				bool green=false;
+				
+				green = ((turn == OPPONENT and i==gOPPONENT) or (turn == YOU and i==gYOU));
+				
 				_rect.setPosition(_item[i].posX, _item[i].posY);
 				_rect.setSize(sf::Vector2f(_item[i].sizeX, _item[i].sizeY));
-				_rect.setFillColor(sf::Color(30,30,30,200));
+				_rect.setFillColor(sf::Color(20*(!green),255*green,255*green,100));
 				_window->draw(_rect);
+
+				float txtX = _item[i].posX+(_item[i].sizeX-_item[i].label.size()*character_size)/2.0f;
+				float txtY = _item[i].posY+character_size/2.0f;
+				_text.setPosition(txtX,txtY);
+				_text.setString(_item[i].label);
+				_text.setCharacterSize(character_size);
+				_window->draw(_text);
+
+				std::string stat = green ? _item[i].stat1 : _item[i].stat2;
+				txtX = _item[i].posX+(_item[i].sizeX-stat.size()*character_size/1.2)/2.0f;
+				txtY = txtY+character_size*2;
+				_text.setCharacterSize(character_size/1.2);
+				_text.setPosition(txtX,txtY);
+				_text.setString(stat);
+				_window->draw(_text);
 			}
 
-			_text.setPosition()
 		}
 		void _renderConnection(bool connected = false){
 			_rect.setPosition(_item[CONNECTION].posX, _item[CONNECTION].posY);
