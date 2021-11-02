@@ -28,10 +28,15 @@ class COffline: public TicTacToe{
 			_HEIGHT = _window->getSize().y;
 			
 			//For test
-			_grid[1][2] = 'X';
-			_grid[1][1] = 'O';
-			_grid[2][1] = 'X';
 			_grid[0][0] = 'O';
+			_grid[0][1] = 'X';
+			_grid[0][2] = 'X';
+			_grid[1][0] = 'X';
+			_grid[1][1] = 'O';
+			_grid[1][2] = 'X';
+			_grid[2][0] = 'X';
+			_grid[2][1] = 'X';
+			_grid[2][2] = 'O';
 		}
 
 		GameState handleInput(){
@@ -94,12 +99,22 @@ class COffline: public TicTacToe{
 		void _renderMove(unsigned int i, unsigned int j, char symbol){
 			if(symbol == 'X'){
 				float hypotenuse=sqrt(pow(0.2*_item[GRID].sizeX,2)+pow(0.2*_item[GRID].sizeY,2));
-				_rect.setPosition(_item[GRID].posX+j*0.37*_item[GRID].sizeX, _item[GRID].posY+i*0.4*_item[GRID].sizeY);
+				float x_offset = _item[GRID].sizeX*0.05;
+				float y_offset = _item[GRID].sizeY*0.05;
+				float grid_sizeX = _item[GRID].sizeX/3;
+				float grid_sizeY = _item[GRID].sizeY/3;
+				float line_sizeX = 0.01*_item[GRID].sizeX;
+				float line_sizeY = 0.01*_item[GRID].sizeY;
+
+				_rect.setPosition(_item[GRID].posX+j*(grid_sizeX+line_sizeX)+x_offset,
+									_item[GRID].posY+i*(grid_sizeY+line_sizeY)+y_offset);
 				_rect.setSize(sf::Vector2f(0.3*0.01*_item[GRID].sizeX, hypotenuse));
 				_rect.setRotation(-55);
 				_window->draw(_rect);
 
-				_rect.setPosition(_item[GRID].posX+j*0.32*_item[GRID].sizeX+_item[GRID].sizeX*0.3, _item[GRID].posY+i*0.4*_item[GRID].sizeY);
+
+				_rect.setPosition(_item[GRID].posX+j*(grid_sizeX+line_sizeX)+x_offset+0.2*_item[GRID].sizeX,
+									_item[GRID].posY+i*(grid_sizeY+line_sizeY)+y_offset);
 				_rect.setRotation(55);
 				_window->draw(_rect);
 				_rect.setRotation(0);
