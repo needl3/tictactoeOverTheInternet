@@ -22,9 +22,15 @@ class Chooser{
 		} _item[4];
 
 	public:
-		Chooser(sf::RenderWindow* window, sf::Event* event){
+		Chooser(sf::RenderWindow* window, sf::Event* event, bool connection_mode = false){
 			_window = window;
 			_events = event;
+			_item[YE].label = "YE";
+			_item[NYE].label = "NYE";
+			if(!connection_mode)
+				_item[QUESTION].label = "Do you want to go first?";
+			else
+				_item[QUESTION].label = "Do you want to host the game?";
 		}
 		void render(){
 			_updateEntities();
@@ -47,19 +53,16 @@ class Chooser{
 			_item[QUESTION].sizeY = _item[BASE].sizeY*0.2f;
 			_item[QUESTION].posX = _item[BASE].posX+(_item[BASE].sizeX-_item[QUESTION].sizeX)/2.0f;
 			_item[QUESTION].posY = _item[BASE].posY+(_item[BASE].sizeY-_item[QUESTION].sizeY)/4.0f;
-			_item[QUESTION].label = "Do you want to go first?";
 
 			_item[YE].sizeX = _item[BASE].sizeX*0.5f*0.3f;
 			_item[YE].sizeY = _item[BASE].sizeY*0.2;
 			_item[YE].posX = _item[QUESTION].posX+(_item[QUESTION].sizeX/2.0f-_item[YE].sizeX)/2.0f;
 			_item[YE].posY = _item[QUESTION].posY+_item[QUESTION].sizeY*1.5;
-			_item[YE].label = "YE";
 
 			_item[NYE].sizeX = _item[YE].sizeX;
 			_item[NYE].sizeY = _item[YE].sizeY;
 			_item[NYE].posX = _item[QUESTION].posX+_item[QUESTION].sizeX/2.0f+(_item[QUESTION].sizeX/2.0f-_item[NYE].sizeX)/2.0f;
 			_item[NYE].posY = _item[YE].posY;
-			_item[NYE].label = "NYE";
 		}
 		void _renderEntities(){
 			for(int i=BASE;i<=NYE;i++){
@@ -94,7 +97,7 @@ class Chooser{
 					for(int i=YE;i<=NYE;i++){
 						if((_item[i].posX < mouseX and _item[i].posX+_item[i].sizeX > mouseX) and
 						(_item[i].posY < mouseY and _item[i].posY+_item[i].sizeY > mouseY)){
-							return i;
+							return i-2;
 						}
 					}
 				}
