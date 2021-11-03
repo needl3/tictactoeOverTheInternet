@@ -16,10 +16,14 @@ Game::Game(){
 void Game::_storeStates(){
 	CSplashScreen s_screen;
 	CMenu menu(_window, _events);
-	COffline offline(_window, _events);
+	COffline offline(_window, _events, tttOffline);
+	COnline online(_window, _events, tttOnline);
+	CWinner winner(_window, _events);
 	_GameMap.push_back(s_screen);
 	_GameMap.push_back(menu);
 	_GameMap.push_back(offline);
+	_GameMap.push_back(online);
+	_GameMap.push_back(winner);
 }
 
 bool Game::isGameRunning(){
@@ -77,7 +81,7 @@ void Game::_handleInputs(){
 					std::any_cast<COnline>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Winner:
-					std::any_cast<CWinner>(&_GameMap[_currentState])->handleInput();
+					_currentState = std::any_cast<CWinner>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Exit:
 					_window.close();

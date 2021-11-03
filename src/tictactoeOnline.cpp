@@ -1,8 +1,5 @@
 #include "../headers/TictactoeOnline.hpp"
 
-TicTacToeOnline::TicTacToeOnline(){
-	std::cout << _establishConnection();
-}
 TicTacToeOnline::~TicTacToeOnline(){
 	//SEND _Socket disconnect signal
 	_SOCKET.disconnect();

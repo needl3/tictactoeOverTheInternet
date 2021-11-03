@@ -11,7 +11,8 @@
 #include <any>
 class Game{
 	private:
-		TicTacToe *ttt;
+		TicTacToe tttOffline;
+		TicTacToeOnline tttOnline;
 	protected:
 		sf::RenderWindow _window;
 		sf::Event _events;

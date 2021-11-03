@@ -1,11 +1,16 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "../GameStates.hpp"
 class CWinner
 {
 public:
 	CWinner(sf::RenderWindow& window, sf::Event& event){
 		
 	}
-	void handleInput(){std::cout << "Menu";}
-	void render(){}
+	GameState handleInput(){
+		return Winner;
+	}
+	void render(){
+		std::cout << "rendering" << std::endl;
+	}
 };

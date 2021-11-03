@@ -5,5 +5,6 @@ enum GameState {
 	Offline,
 	Online,
 	Exit,
-	Winner
+	Winner,
+	TurnChooser
 };

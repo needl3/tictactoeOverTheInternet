@@ -14,7 +14,6 @@ class TicTacToeOnline:public TicTacToe{
 		std::size_t _received = 0;
 
 	public:
-		TicTacToeOnline();
 		~TicTacToeOnline();
 	
 	private:
