@@ -1,12 +1,12 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include "Offline.hpp"
-#include "../GameStates.hpp"
-class COnline{
+#include "../GameRenderer.hpp"
+#include "../Tictactoe.hpp"
+class COnline: public GameRenderer<TicTacToeOnline>{
 public:
-	COnline(sf::RenderWindow& window, sf::Event& event, TicTacToeOnline& game){
-		
+	COnline(sf::RenderWindow& window, sf::Event& event, TicTacToeOnline& game):GameRenderer(window, event, game){
 	}
-	GameState handleInput(){std::cout << "Menu";}
+	GameState handleInput(){
+		return Online;
+	}
 	void render(){}
 };

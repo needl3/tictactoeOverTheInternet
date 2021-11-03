@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "../GameStates.hpp"
+#include <iostream>
 
 class Chooser{
 	private:
@@ -40,10 +41,10 @@ class Chooser{
 				case 0:
 					_item[QUESTION].label = "Do you want to go first?";
 					break;
-				case 1:
+				case 2:
 					_item[QUESTION].label = "Do you want to host the game?";
 					break;
-				case 2:
+				case 1:
 					_item[QUESTION].label = "Do you want to play again?";
 					break;
 				default:
