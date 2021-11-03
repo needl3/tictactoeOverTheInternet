@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "../GameStates.hpp"
+
 class Chooser{
 	private:
 		sf::RenderWindow *_window;
@@ -12,6 +14,7 @@ class Chooser{
 
 		sf::RectangleShape _rect;
 		sf::Text _text;
+		sf::Font _txt_font;
 
 		enum {BASE,QUESTION,YE,NYE};
 
@@ -22,15 +25,30 @@ class Chooser{
 		} _item[4];
 
 	public:
-		Chooser(sf::RenderWindow* window, sf::Event* event, bool connection_mode = false){
+		Chooser(sf::RenderWindow* window, sf::Event* event){
 			_window = window;
 			_events = event;
+
+			_txt_font.loadFromFile("assets/fonts/japanese.ttf");
 			_item[YE].label = "YE";
 			_item[NYE].label = "NYE";
-			if(!connection_mode)
-				_item[QUESTION].label = "Do you want to go first?";
-			else
-				_item[QUESTION].label = "Do you want to host the game?";
+			
+			setMode();
+		}
+		void setMode(unsigned int mode = 0){
+			switch (mode){
+				case 0:
+					_item[QUESTION].label = "Do you want to go first?";
+					break;
+				case 1:
+					_item[QUESTION].label = "Do you want to host the game?";
+					break;
+				case 2:
+					_item[QUESTION].label = "Do you want to play again?";
+					break;
+				default:
+					std::cout << "No renderer" << std::endl;
+			}
 		}
 		void render(){
 			_updateEntities();
@@ -78,15 +96,14 @@ class Chooser{
 				_window->draw(_rect);
 
 				float character_size = _item[i].sizeX/(_item[i].label.size()+2);
-				float txtX = _item[i].posX+(_item[i].sizeX-_item[i].label.size()*character_size)/2.0f;
-				float txtY = _item[i].posY+character_size/2.0f;
-
+				float txtX = _item[i].posX+_item[i].sizeX*0.3;
+				float txtY = _item[i].posY+_item[i].sizeY*0.1;
+				_text.setFont(_txt_font);
 				_text.setString(_item[i].label);
 				_text.setPosition(txtX,txtY);
 				_text.setCharacterSize(character_size);
 				_text.setFillColor(sf::Color::White);
 				_window->draw(_text);
-
 			}
 		}
 

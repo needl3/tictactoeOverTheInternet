@@ -16,6 +16,7 @@ class CMenu{
 		
 		sf::SoundBuffer *_s_buffer_main = new sf::SoundBuffer;
 		sf::SoundBuffer *_s_buffer_option_hover = new sf::SoundBuffer;
+		sf::SoundBuffer *_s_buffer_clicked = new sf::SoundBuffer;
 		
 		sf::Sound *_s_sound_main = new sf::Sound;
 		sf::Sound *_s_sound_other = new sf::Sound;
@@ -66,12 +67,13 @@ class CMenu{
 			
 			_background_texture.loadFromFile("assets/pictures/background.jpg");
 
+			//Loading Soundbuffers
 			_s_buffer_main->loadFromFile("assets/audio/theme.wav");
 			_s_sound_main->setBuffer(*_s_buffer_main);
 			_s_sound_main->setLoop(true);
 
 			_s_buffer_option_hover->loadFromFile("assets/audio/hover.wav");
-			_s_sound_other->setBuffer(*_s_buffer_option_hover);
+			_s_buffer_clicked->loadFromFile("assets/audio/select.wav");
 
 			_txt_font.loadFromFile("assets/fonts/japanese.ttf");
 
@@ -95,14 +97,16 @@ class CMenu{
 		}
 		GameState handleInput(){
 			if(_event->type==sf::Event::MouseButtonPressed){
-				for(int i=_OFFLINE; i <= _EXIT; i++){
-					_rect_obj.setPosition(_items[i].r_position);
-					_rect_obj.setSize(_items[i].r_size);
-					if(_rect_obj.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*_window)))){
-						_s_buffer_option_hover->loadFromFile("assets/audio/select.wav");
-						_s_sound_other->setBuffer(*_s_buffer_option_hover);
-						_s_sound_other->play();
-						return static_cast<GameState>(i+1);
+				_window->waitEvent(*_event);
+				if(_event->type == sf::Event::MouseButtonReleased){
+					for(int i=_OFFLINE; i <= _EXIT; i++){
+						_rect_obj.setPosition(_items[i].r_position);
+						_rect_obj.setSize(_items[i].r_size);
+						if(_rect_obj.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*_window)))){
+							_s_sound_other->setBuffer(*_s_buffer_clicked);
+							_s_sound_other->play();
+							return static_cast<GameState>(i+1);
+						}
 					}
 				}
 			}
@@ -126,6 +130,7 @@ class CMenu{
 				if (i != _TITLE){
 					if(_rect_obj.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*_window)))){
 						if(_s_sound_other->getStatus() != sf::Sound::Playing && !_hover_played){
+							_s_sound_other->setBuffer(*_s_buffer_option_hover);
 							_s_sound_other->play();
 							_hover_played = true;
 						}

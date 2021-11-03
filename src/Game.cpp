@@ -10,7 +10,7 @@ Game::Game(){
 
 	_storeStates();
 
-	_currentState = Offline;
+	_currentState = SplashScreen;
 }
 
 void Game::_storeStates(){
@@ -18,12 +18,10 @@ void Game::_storeStates(){
 	CMenu menu(_window, _events);
 	COffline offline(_window, _events, tttOffline);
 	COnline online(_window, _events, tttOnline);
-	CWinner winner(_window, _events);
 	_GameMap.push_back(s_screen);
 	_GameMap.push_back(menu);
 	_GameMap.push_back(offline);
 	_GameMap.push_back(online);
-	_GameMap.push_back(winner);
 }
 
 bool Game::isGameRunning(){
@@ -56,6 +54,8 @@ void Game::_renderState(){
 		case Winner:
 			std::any_cast<CWinner>(&_GameMap[_currentState])->render();
 			break;
+		case Exit:
+			_window.close();
 		default:
 			std::cout << "No renderer..." << std::endl;
 	}
@@ -78,10 +78,7 @@ void Game::_handleInputs(){
 					_currentState = std::any_cast<COffline>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Online:
-					std::any_cast<COnline>(&_GameMap[_currentState])->handleInput();
-					break;
-				case Winner:
-					_currentState = std::any_cast<CWinner>(&_GameMap[_currentState])->handleInput();
+					_currentState = std::any_cast<COnline>(&_GameMap[_currentState])->handleInput();
 					break;
 				case Exit:
 					_window.close();

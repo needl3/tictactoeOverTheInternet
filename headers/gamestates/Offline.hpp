@@ -3,6 +3,7 @@
 #include "../Tictactoe.hpp"
 #include "../GameStates.hpp"
 #include "Chooser.hpp"
+#include "Winner.hpp"
 
 class COffline{
 	private:
@@ -23,6 +24,10 @@ class COffline{
 		short _winner = -1;
 
 		enum _itemBox {gOPPONENT, gYOU, GRID, CONNECTION};
+
+		enum _States {TURN_CHOOSER, HOST_CHOOSER, PLAY_AGAIN, WINNER, GAME};
+
+		_States _current_state;
 
 		struct {
 			sf::RectangleShape rect_shape;
@@ -52,6 +57,9 @@ class COffline{
 			_game = &game;
 
 			_turn_chooser = new Chooser(_window,_events);
+			_turn_chooser->setMode(TURN_CHOOSER);
+
+			_current_state = TURN_CHOOSER;
 
 			_WIDTH = _window->getSize().x;
 			_HEIGHT = _window->getSize().y;
@@ -73,24 +81,56 @@ class COffline{
 		}
 
 		GameState handleInput(){
-			if(_turn_chosen > -1){
-				short position = _getGridPosition(sf::Mouse::getPosition(*_window));
-				if(position>-1){
-					if(_game->placeMove(_game->MOVE_MAP[position])){
-						_winner = _game->checkWinner();
-						if(_winner > 0)
-							return Winner;
-						_game->toggleTurn();
+			switch (_current_state){
+				case TURN_CHOOSER:
+					// 0 indicates accepted to play first
+					_turn_chosen = _turn_chooser->handleInput();
+					if(_turn_chosen > -1){
+						_game->turn = _turn_chosen ? _game->OPPONENT : _game->YOU;
+						_game->clearGrid();
+						_current_state = GAME;
 					}
+					break;
+				case GAME:
+					{
+						_window->waitEvent(*_events);
+						if(_events->type == sf::Event::MouseButtonReleased){
+							short position = _getGridPosition(sf::Mouse::getPosition(*_window));
+							if(position>-1){
+								if(_game->placeMove(_game->MOVE_MAP[position])){
+									_winner = _game->checkWinner();
+									if(_winner < 0)	_game->toggleTurn();
+									else _current_state = WINNER;
+								}
+							}
+						}
+					}
+					break;
+				case HOST_CHOOSER:
+					_turn_chosen = _turn_chooser->handleInput();
+					if(_turn_chosen > -1)	_game->is_host = !_turn_chosen;
+					break;
+
+				case WINNER:
+					_window->waitEvent(*_events);
+					if(_events->type == sf::Event::MouseButtonReleased)
+						_current_state = PLAY_AGAIN;
+					break;
+				case PLAY_AGAIN:
+					_turn_chosen = _turn_chooser->handleInput();
+					if(!_turn_chosen){
+						_game->clearGrid();
+						_current_state = GAME;
+					}
+					else if(_turn_chosen == 1){
+						_game->clearGrid();
+						return Menu;
+					}
+					break;
+
 				}
-			}else{
-				// 1 indicates accepted to play first
-				_turn_chosen = _turn_chooser->handleInput();
-				if(_turn_chosen > -1)
-					_game->turn = _turn_chosen ? _game->YOU : _game->OPPONENT;
-			}
 			return Offline;
-		}
+			}
 
 		void render(){
 			_updateDimensions();
@@ -98,8 +138,25 @@ class COffline{
 			_renderGrid();
 			_renderStatus();
 			_renderConnection(false);
-			if(_turn_chosen<0){
-				_turn_chooser->render();
+			switch(_current_state){
+				case TURN_CHOOSER:
+					_turn_chooser->setMode((unsigned int)TURN_CHOOSER);
+					_turn_chooser->render();
+					break;		
+				case HOST_CHOOSER:
+					_turn_chooser->setMode((unsigned int)HOST_CHOOSER);
+					_turn_chooser->render();
+					break;
+				case PLAY_AGAIN:
+					_turn_chooser->setMode((unsigned int)PLAY_AGAIN);
+					_turn_chooser->render();
+					break;
+				case WINNER:
+					_renderWinner();
+					break;
+				default:
+					std::cout << "No valid state" << std::endl;
+					break;
 			}
 		}
 	private:
@@ -118,6 +175,27 @@ class COffline{
 				}
 			}
 			return -1;
+		}
+		void _renderWinner(){
+			_rect.setPosition(0,(_HEIGHT-_HEIGHT/2.0f)/2.0f);
+			_rect.setSize(sf::Vector2f(_WIDTH,_HEIGHT/2.0f));
+			_rect.setFillColor(sf::Color(100,100,100,100));
+			_window->draw(_rect);
+
+			std::string winning_label = "You  ";
+			if(_game->turn == _game->YOU)
+				winning_label.insert(4,"Won");
+			else
+				winning_label.insert(4,"Lost");
+
+			unsigned short character_size = _HEIGHT/5.0f;
+			float x = (_WIDTH - character_size*winning_label.size())*2.0f;
+			float y = _rect.getGlobalBounds().top+(_rect.getSize().y-character_size)/2.0f;
+			_text.setFont(_txt_font);
+			_text.setString(winning_label);
+			_text.setPosition(x,y);
+			_text.setCharacterSize(character_size);
+			_window->draw(_text);
 		}
 		void _renderGrid(){
 			for(int i=0;i<3;i++){
@@ -179,6 +257,7 @@ class COffline{
 	
 				float txtX = _item[i].posX+(_item[i].sizeX-_item[i].label.size()*character_size)/2.0f;
 				float txtY = _item[i].posY+character_size/2.0f;
+				_text.setCharacterSize(_item[CONNECTION].sizeY);
 				_text.setPosition(txtX,txtY);
 				_text.setString(_item[i].label);
 				_window->draw(_text);
