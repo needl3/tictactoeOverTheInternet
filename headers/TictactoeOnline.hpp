@@ -15,16 +15,8 @@ class TicTacToeOnline:public TicTacToe{
 
 	public:
 		~TicTacToeOnline();
-		bool establishConnection(bool host, std::string host_url, unsigned int host_port);
-		unsigned short getMove(unsigned short move);
-		//Overloading functions
-		void askTurn(unsigned short);
-	
-	protected:
-		void _sendMove(unsigned short);
-
-
-		unsigned short _waitForResponse();
-		
+		bool establishConnection(bool host, std::string, unsigned);
+		void sendMove(unsigned short);
+		unsigned short waitForResponse();
 
 };

@@ -21,13 +21,9 @@ class GameRenderer{
 		sf::Text _text;
 		sf::Font _txt_font;
 
-		short _winner = -1;
 
 		enum _itemBox {gOPPONENT, gYOU, GRID, CONNECTION};
 
-		enum _States {TURN_CHOOSER, PLAY_AGAIN, WINNER, GAME};
-
-		_States _current_state;
 
 		struct {
 			sf::RectangleShape rect_shape;
@@ -46,9 +42,14 @@ class GameRenderer{
 			float line_sizeY;
 		} _tileProperties;
 
-		unsigned int _WIDTH, _HEIGHT;
 
 	protected:
+		short _winner = -1;
+
+		enum _States {TURN_CHOOSER, PLAY_AGAIN, WINNER, GAME};
+		_States _current_state;
+
+		unsigned int _WIDTH, _HEIGHT;
 		short _turn_chosen = -1;
 		bool _is_connected = false;
 		Chooser *_turn_chooser;
@@ -57,7 +58,7 @@ class GameRenderer{
 	public:
 		GameRenderer(sf::RenderWindow&, sf::Event&, T& game);
 		void render();
-		GameState handleInput(unsigned short move = 0);
+		GameState handleInput();
 
 	private:
 		void prepareData(sf::RenderWindow&, sf::Event&);

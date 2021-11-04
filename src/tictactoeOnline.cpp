@@ -21,33 +21,14 @@ bool TicTacToeOnline::establishConnection(bool is_host, std::string host_url, un
 	}
 	return true;
 }
-unsigned short TicTacToeOnline::getMove(unsigned short move){
-	if (turn == YOU){
-		_sendMove(move);
-	}else{
-		move = _waitForResponse();
-	}
-	return move;
-}
-void TicTacToeOnline::askTurn(unsigned short turn = -1){
-	if (!is_host){
-		turn = _waitForResponse();
-	}
-	else{
-		toggleTurn();
-		_sendMove(turn);
-		toggleTurn();
-	}
-}
-
-void TicTacToeOnline::_sendMove(unsigned short move){
+void TicTacToeOnline::sendMove(unsigned short move){
 	_buffer = (char)move;
 	if(_SOCKET.send(&_buffer, sizeof(_buffer)) != sf::Socket::Done){
 		std::cout << "Cannot send data...Connection corrupted" << std::endl;
 		exit(0);
 	}
 }
-unsigned short TicTacToeOnline::_waitForResponse(){
+unsigned short TicTacToeOnline::waitForResponse(){
 	std::cout << "Waiting for response" << std::endl;
 	if(_SOCKET.receive(&_buffer, sizeof(_buffer), _received)!= sf::Socket::Done){
 		std::cout << "Connection corrupted" << std::endl;

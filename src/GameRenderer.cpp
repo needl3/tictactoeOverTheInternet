@@ -36,7 +36,7 @@ void GameRenderer<T>::prepareData(sf::RenderWindow& window, sf::Event& event){
 }
 
 template <typename T>
-GameState GameRenderer<T>::handleInput(unsigned short move){
+GameState GameRenderer<T>::handleInput(){
 	switch (_current_state){
 		case TURN_CHOOSER:
 			// 0 indicates accepted to play first
@@ -52,8 +52,6 @@ GameState GameRenderer<T>::handleInput(unsigned short move){
 				_window->waitEvent(*_events);
 				if(_events->type == sf::Event::MouseButtonReleased){
 					short position = getGridPosition(sf::Mouse::getPosition(*_window));
-					if(move)
-						position = move;
 					if(position>-1){
 						if(_game->placeMove(_game->MOVE_MAP[position])){
 							_winner = _game->checkWinner();
@@ -105,7 +103,6 @@ void GameRenderer<T>::render(){
 			_renderWinner();
 			break;
 		default:
-			std::cout << "No valid state" << std::endl;
 			break;
 	}
 }
@@ -140,7 +137,6 @@ void GameRenderer<T>::_renderWinner(){
 		winning_label.insert(4,"Won");
 	else
 		winning_label.insert(4,"Lost");
-
 	unsigned short character_size = _HEIGHT/5.0f;
 	float x = (_WIDTH - character_size*winning_label.size())*2.0f;
 	float y = _rect.getGlobalBounds().top+(_rect.getSize().y-character_size)/2.0f;
