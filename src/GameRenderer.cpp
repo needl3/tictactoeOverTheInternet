@@ -36,7 +36,7 @@ void GameRenderer<T>::prepareData(sf::RenderWindow& window, sf::Event& event){
 }
 
 template <typename T>
-GameState GameRenderer<T>::handleInput(){
+GameState GameRenderer<T>::handleInput(unsigned short move){
 	switch (_current_state){
 		case TURN_CHOOSER:
 			// 0 indicates accepted to play first
@@ -51,7 +51,9 @@ GameState GameRenderer<T>::handleInput(){
 			{
 				_window->waitEvent(*_events);
 				if(_events->type == sf::Event::MouseButtonReleased){
-					short position = _getGridPosition(sf::Mouse::getPosition(*_window));
+					short position = getGridPosition(sf::Mouse::getPosition(*_window));
+					if(move)
+						position = move;
 					if(position>-1){
 						if(_game->placeMove(_game->MOVE_MAP[position])){
 							_winner = _game->checkWinner();
@@ -109,7 +111,7 @@ void GameRenderer<T>::render(){
 }
 
 template <typename T>
-short GameRenderer<T>::_getGridPosition(sf::Vector2i position){
+short GameRenderer<T>::getGridPosition(sf::Vector2i position){
 	int x1,y1,x2,y2,count=0;
 	for (int i=0;i<3;i++){
 		for (int j=0;j<3;j++){

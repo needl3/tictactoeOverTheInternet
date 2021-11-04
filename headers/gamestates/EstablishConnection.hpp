@@ -2,12 +2,14 @@
 
 #include <SFML/Graphics.hpp>
 #include "../GameStates.hpp"
+#include "../TictactoeOnline.hpp"
 
 
 class EstablishConnection{
 	private:
 		sf::RenderWindow *_window;
 		sf::Event		 *_events;
+		TicTacToeOnline *_game;
 
 		unsigned short _WIDTH;
 		unsigned short _HEIGHT;
@@ -16,7 +18,9 @@ class EstablishConnection{
 		sf::Text _text;
 		sf::Font _font;
 
-		enum {BASE, URL, PORT, OK, URL_CONTAINER, PORT_CONTAINER};
+		enum _States{BASE, URL, PORT, OK, URL_CONTAINER, PORT_CONTAINER};
+
+		unsigned short _keyboard_stat = BASE, keyPointer = 0;
 
 		struct {
 			float posX, posY;
@@ -24,6 +28,8 @@ class EstablishConnection{
 			std::string label;
 			sf::Color color;
 		} _items[6];
+
+		bool _is_connecting = false;
 
 		bool _is_host;
 
@@ -44,45 +50,89 @@ class EstablishConnection{
 			_items[URL].posY = _items[BASE].posY+(_items[BASE].sizeY/2.0f-_items[URL].sizeY)/2.0f;
 			_items[URL].color = sf::Color(100,200,200,200);
 
-			_items[PORT].sizeX = _items[URL].sizeX*0.5f;
+			_items[PORT].sizeX = _items[URL].sizeX*0.6f;
 			_items[PORT].sizeY = _items[URL].sizeY;
 			_items[PORT].posX = _items[URL].posX;
 			_items[PORT].posY = _items[URL].posY+_items[URL].sizeY+(_items[BASE].sizeY/2.0f-_items[PORT].sizeY)/2.0f;
 			_items[PORT].color = _items[URL].color;
 
-			_items[OK].sizeX = _items[PORT].sizeX*0.5f;
+			_items[OK].sizeX = _items[PORT].sizeX*0.8f;
 			_items[OK].sizeY = _items[PORT].sizeY;
 			_items[OK].posX = _items[BASE].sizeX-_items[OK].sizeX*1.5;
 			_items[OK].posY = _items[PORT].posY+_items[PORT].sizeY+_items[OK].sizeY*0.4;
-			_items[OK].color = sf::Color(10,10,10,50);
-			_items[OK].label = "OK";
 
 			_items[URL_CONTAINER].sizeX = (_items[BASE].sizeX-_items[URL].sizeX)*0.7;
 			_items[URL_CONTAINER].sizeY = _items[URL].sizeY*0.8;
 			_items[URL_CONTAINER].posX = _items[URL].sizeX+_items[URL].posX+(_items[BASE].sizeX-_items[URL].posX-_items[URL].sizeX-_items[URL_CONTAINER].sizeX)/2.0f;
 			_items[URL_CONTAINER].posY = _items[URL].posY+(_items[URL].sizeY-_items[URL_CONTAINER].sizeY)/2.0f;
-			_items[URL_CONTAINER].color = sf::Color(10,10,10,50);
-			_items[URL_CONTAINER].label = "|";
 
 			_items[PORT_CONTAINER].sizeX = (_items[BASE].sizeX-_items[URL].sizeX)*0.3;
 			_items[PORT_CONTAINER].sizeY = _items[PORT].sizeY*0.8;
 			_items[PORT_CONTAINER].posX = _items[URL_CONTAINER].posX;
 			_items[PORT_CONTAINER].posY = _items[PORT].posY+(_items[PORT].sizeY-_items[PORT_CONTAINER].sizeY)/2.0f;
-			_items[PORT_CONTAINER].color = sf::Color(10,10,10,50);
-			_items[PORT_CONTAINER].label = "|";
-			
 		}
 
 	public:
-		EstablishConnection(sf::RenderWindow& window, sf::Event& event){
+		EstablishConnection(sf::RenderWindow& window, sf::Event& event, TicTacToeOnline& game){
 			_window = &window;
 			_events = &event;
+			_game = &game;
 
 			_font.loadFromFile("assets/fonts/japanese.ttf");
-
+			_items[URL_CONTAINER].color = sf::Color(20,30,30,50);
+			_items[PORT_CONTAINER].color = sf::Color(20,30,30,50);
+			_items[URL_CONTAINER].label = "";
+			_items[PORT_CONTAINER].label = "";
+			_items[OK].label = "OK";
+			_items[OK].color = sf::Color(10,10,10,50);
 		}
 		bool handleInput(){
+			if(_is_connecting)
+				return false;
+			sf::Vector2i mousePointer = sf::Mouse::getPosition(*_window);
+			switch (_events->type){
+				case sf::Event::MouseButtonPressed:
+					//Keyboard state selector
+					for(int i=URL_CONTAINER;i<=PORT_CONTAINER;i++){
+						_rect.setPosition(_items[i].posX,_items[i].posY);
+						_rect.setSize(sf::Vector2f(_items[i].sizeX, _items[i].sizeY));
 
+						if(_rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePointer))
+							and _keyboard_stat == BASE){
+							_items[i].color +=_items[i].color;
+							_keyboard_stat = i;
+						}else if(!_rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePointer))
+						 and _keyboard_stat == i){
+							_items[i].color -= _items[i].color;						
+							_keyboard_stat = BASE;
+						}
+					}
+					//Ok controller
+					if (_items[OK].posX < mousePointer.x and _items[OK].posX+_items[OK].sizeX > mousePointer.x
+						and  _items[OK].posY < mousePointer.y and _items[OK].posY+_items[OK].sizeY > mousePointer.y
+						and !_is_connecting){
+						_items[OK].label = "Connecting";
+						_items[OK].color += sf::Color(0,255,255,50);
+						if(_connect())
+							return true;
+						else if(!_is_connecting){
+							_items[OK].label = "OK";
+							_items[OK].color -= sf::Color(0,255,255,50);
+						}
+					}
+					break;
+				case sf::Event::TextEntered:
+					for(int i=URL_CONTAINER;i<=PORT_CONTAINER;i++){
+						if(_events->text.unicode != 8 /*Backspace Key*/ and i==_keyboard_stat){	
+							_items[i].label.resize(_items[i].label.size()+1,(char)_events->text.unicode);
+							_window->waitEvent(*_events);
+						}else if (i == _keyboard_stat and _items[i].label.size()){
+							_items[i].label.resize(_items[i].label.size()-1);
+							_window->waitEvent(*_events);
+						}
+					}
+					break;
+			}
 			return false;
 		}
 		void render(){
@@ -121,5 +171,12 @@ class EstablishConnection{
 				_items[URL].label = "Enter public/relay url of the host";
 				_items[PORT].label = "Enter port";
 			}
+		}
+		bool _connect(){
+			_is_connecting = true;
+			bool has_connected = _game->establishConnection(_is_host, _items[URL_CONTAINER].label,
+												std::stoul(_items[PORT_CONTAINER].label));
+			_is_connecting = false;
+			return has_connected;
 		}
 };

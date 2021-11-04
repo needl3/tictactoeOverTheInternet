@@ -52,15 +52,15 @@ class GameRenderer{
 		short _turn_chosen = -1;
 		bool _is_connected = false;
 		Chooser *_turn_chooser;
+		short getGridPosition(sf::Vector2i);
 
 	public:
 		GameRenderer(sf::RenderWindow&, sf::Event&, T& game);
 		void render();
-		GameState handleInput();
+		GameState handleInput(unsigned short move = 0);
 
 	private:
 		void prepareData(sf::RenderWindow&, sf::Event&);
-		short _getGridPosition(sf::Vector2i);
 		void _renderWinner();
 		void _renderGrid();
 		void _updateDimensions();

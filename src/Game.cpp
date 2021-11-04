@@ -10,7 +10,7 @@ Game::Game(){
 
 	_storeStates();
 
-	_currentState = SplashScreen;
+	_currentState = Online;
 }
 
 void Game::_storeStates(){
@@ -86,6 +86,9 @@ void Game::_handleInputs(){
 				default:
 					std::cout << "No handler";
 			}
+			break;
+		case sf::Event::TextEntered:
+			_currentState = std::any_cast<COnline>(&_GameMap[_currentState])->handleInput();
 			break;
 		case sf::Event::Resized:
 			_window.setSize(sf::Vector2u(_events.size.width, _events.size.height));
