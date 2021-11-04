@@ -32,7 +32,11 @@ unsigned short TicTacToeOnline::waitForResponse(){
 	std::cout << "Waiting for response" << std::endl;
 	if(_SOCKET.receive(&_buffer, sizeof(_buffer), _received)!= sf::Socket::Done){
 		std::cout << "Connection corrupted" << std::endl;
-		exit(0);	
+		is_connected = false;
 	}
 	return (int)_buffer;
+}
+void TicTacToeOnline::resetConnection(){
+	_SOCKET.disconnect();
+	_LISTENER.close();
 }

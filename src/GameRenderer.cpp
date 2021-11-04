@@ -137,8 +137,8 @@ void GameRenderer<T>::_renderWinner(){
 		winning_label.insert(4,"Won");
 	else
 		winning_label.insert(4,"Lost");
-	unsigned short character_size = _HEIGHT/5.0f;
-	float x = (_WIDTH - character_size*winning_label.size())*2.0f;
+	unsigned short character_size = _WIDTH/10.0f;
+	float x = (_WIDTH*0.3);
 	float y = _rect.getGlobalBounds().top+(_rect.getSize().y-character_size)/2.0f;
 	_text.setFont(_txt_font);
 	_text.setString(winning_label);

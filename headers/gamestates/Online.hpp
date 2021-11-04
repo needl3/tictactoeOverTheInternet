@@ -6,10 +6,8 @@
 #include "../GameStates.hpp"
 
 /*
-	To Fix:
-		No you lost render
+	To Solve:
 		find a way to detect packet retrieval without mousepressed event
-		Solve the segfault error when playing in same pc
 */
 
 class COnline: public GameRenderer<TicTacToeOnline>{
@@ -40,7 +38,6 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 			_font.loadFromFile("assets/fonts/japanese.ttf");
 			character_size = _WIDTH/(_text.getString().getSize()+5);
 			character_size = 40;
-			std::cout << "Character size: " << character_size;
 			_text.setString("Waiting for host to choose the turn...");
 			_text.setPosition((_WIDTH-_text.getString().getSize()*character_size)/2.0f, _rect.getPosition().y+character_size);
 			_text.setCharacterSize(character_size);
@@ -64,7 +61,7 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 
 				_game->turn = _turn_chosen ? _game->OPPONENT : _game->YOU;
 				_current_state = GAME;
-			}else{
+			}else if(_current_state == GAME){
 				short move;
 				if(_game->turn == _game->YOU){
 					move = getGridPosition(sf::Mouse::getPosition(*_window));
@@ -80,6 +77,12 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 				_winner = _game->checkWinner();
 				if(_winner < 0)	_game->toggleTurn();
 				else _current_state = WINNER;
+			}else{
+				if(GameRenderer<TicTacToeOnline>::handleInput() == Menu){
+					_is_connected = false;
+					_game->resetConnection();
+					return Menu;
+				}
 			}
 			return Online;
 		}

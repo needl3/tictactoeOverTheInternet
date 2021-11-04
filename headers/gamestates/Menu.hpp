@@ -144,6 +144,8 @@ class CMenu{
 						_rect_obj.setOutlineThickness(0);
 					}
 				}
+				if(i == _TITLE)
+					_rect_obj.setOutlineThickness(0);
 				_rect_obj.setFillColor(_items[i].b_color);
 				_window->draw(_rect_obj);
 

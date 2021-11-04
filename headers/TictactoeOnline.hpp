@@ -18,5 +18,6 @@ class TicTacToeOnline:public TicTacToe{
 		bool establishConnection(bool host, std::string, unsigned);
 		void sendMove(unsigned short);
 		unsigned short waitForResponse();
+		void resetConnection();
 
 };

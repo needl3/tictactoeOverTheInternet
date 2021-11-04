@@ -5,15 +5,12 @@ Game::Game(){
 	_WIDTH = sf::VideoMode::getDesktopMode().width;
 	_HEIGHT = sf::VideoMode::getDesktopMode().height;
 
-	_WIDTH = 700;
-	_HEIGHT = 400;
-
 	_window.create(sf::VideoMode(_WIDTH,_HEIGHT), "TicTacToe");
 	_window.setFramerateLimit(_FRAMERATE);
 
 	_storeStates();
 
-	_currentState = Menu;
+	_currentState = SplashScreen;
 }
 
 void Game::_storeStates(){
