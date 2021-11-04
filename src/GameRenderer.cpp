@@ -3,7 +3,6 @@
 #include "../headers/TictactoeOnline.hpp"
 template <typename T>
 GameRenderer<T>::GameRenderer(sf::RenderWindow& window, sf::Event& event, T& game){
-	_is_host = 1;
 	_current_state = TURN_CHOOSER;
 	_game = &game;
 	prepareData(window, event);
@@ -90,7 +89,7 @@ void GameRenderer<T>::render(){
 	_renderBackground();
 	_renderGrid();
 	_renderStatus();
-	_renderConnection(false);
+	_renderConnection();
 	switch(_current_state){
 		case TURN_CHOOSER:
 			_turn_chooser->setMode((unsigned int)TURN_CHOOSER);
@@ -232,7 +231,7 @@ void GameRenderer<T>::_renderStatus(){
 }
 
 template <typename T>
-void GameRenderer<T>::_renderConnection(bool connected /*= false*/){
+void GameRenderer<T>::_renderConnection(){
 	_rect.setPosition(_item[CONNECTION].posX, _item[CONNECTION].posY);
 	_rect.setSize(sf::Vector2f(_item[CONNECTION].sizeX, _item[CONNECTION].sizeY));
 	_rect.setFillColor(sf::Color(0,200,200,100));
@@ -241,7 +240,7 @@ void GameRenderer<T>::_renderConnection(bool connected /*= false*/){
 	float character_size = _item[CONNECTION].sizeY;
 	float textPositionX = _item[CONNECTION].posX+3*character_size;
 	float textPositionY = _item[CONNECTION].posY-character_size/10.0f;
-	if(connected){
+	if(_is_connected){
 		_text.setFillColor(sf::Color(0,200,100));
 		_text.setString(_item[CONNECTION].stat1);
 	}

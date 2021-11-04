@@ -11,7 +11,6 @@ class GameRenderer{
 		sf::RenderWindow *_window;
 		sf::Event *_events;
 		T *_game;
-		Chooser *_turn_chooser;
 		
 		sf::Texture _background_texture;
 		sf::Sprite _background_sprite;
@@ -23,8 +22,6 @@ class GameRenderer{
 		sf::Font _txt_font;
 
 		short _winner = -1;
-		short _turn_chosen = -1;
-		short _is_host = -1;
 
 		enum _itemBox {gOPPONENT, gYOU, GRID, CONNECTION};
 
@@ -51,19 +48,26 @@ class GameRenderer{
 
 		unsigned int _WIDTH, _HEIGHT;
 
+	protected:
+		short _turn_chosen = -1;
+		bool _is_connected = false;
+		Chooser *_turn_chooser;
 
 	public:
 		GameRenderer(sf::RenderWindow&, sf::Event&, T& game);
-		void prepareData(sf::RenderWindow&, sf::Event&);
 		void render();
 		GameState handleInput();
+
+	private:
+		void prepareData(sf::RenderWindow&, sf::Event&);
 		short _getGridPosition(sf::Vector2i);
 		void _renderWinner();
 		void _renderGrid();
 		void _updateDimensions();
 		void _renderBackground();
 		void _renderStatus();
-		void _renderConnection(bool connected = false);
+		void _renderConnection();
 		void _renderMove(unsigned int, unsigned int, char);
 		void _renderLine(unsigned int, unsigned int);
+
 };
