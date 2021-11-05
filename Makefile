@@ -1,51 +1,59 @@
-# CC = g++
-# SOURCE_DIR = src
-# OBJ_DIR = obj
-# BIN_DIR = bin
-# LIB_DIR = lib
-# INC_DIR = headers
+# Compiler
+CC = g++
 
-# SRC_FILES = $(wildcard $(SOURCE_DIR)/*.cpp)
-# OBJ_FILES = $(patsubst %,$(OBJ_DIR)/%, $(notdir $(SRC_FILES:.cpp=.o)))
-# HEAD_FILES = $(wildcard $(INC_DIR)/*.hpp)
+# Debugger
+DEBUGGER = gdb
 
-# FINALEXE = ttt
+#Memory Tester(For segfaults)
+MEM_TESTER = valgrind
 
-# LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
-# CFLAGS = -Wall -g
-
-# all: $(BIN_DIR)/$(FINALEXE)
-
-# $(BIN_DIR)/$(FINALEXE): $(OBJ_FILES)
-# 	$(CC) -o $@ $^ $(LFLAGS)
-
-# $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(HEAD_FILES)
-# 	$(CC) -c $^ $(CFLAGS) -o $@
-
-# .PHONY: run clean
-
-# run:
-# 	./$(BIN_DIR)/$(FINALEXE)
-
-# clean:
-# 	rm -rf $(OBJ_FILES) $(@) $(INC_DIR)/*.gch
-
+# Directories
 SOURCE_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 LIB_DIR = lib
-COMPILER = g++
+INC_DIR = headers
 
-SRC_FILES = $(SOURCE_DIR)/*.cpp
+#Final Executable
+FINALEXE = Tictactoe
 
-FINALEXE = ttt
+# Filenames
+SRC_FILES = $(wildcard $(SOURCE_DIR)/*.cpp)
+OBJ_FILES = $(patsubst %,$(OBJ_DIR)/%, $(notdir $(SRC_FILES:.cpp=.o)))
+HEAD_FILES = $(wildcard $(INC_DIR)/*.hpp)
 
-FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -lsfml-network
+# Linking Flags
+LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-CFLAGS = -g -Wall
+# Compiler Flags
+CFLAGS = -g
 
-build:
-	$(COMPILER) $(CFLAGS) $(SRC_FILES) -o $(BIN_DIR)/$(FINALEXE) $(FLAGS)
+# Default Target
+all: $(BIN_DIR)/$(FINALEXE)
 
-run:
-	./$(BIN_DIR)/$(FINALEXE) 
+
+# Building Instructions
+$(BIN_DIR)/$(FINALEXE): $(OBJ_FILES)
+	@echo [+] Linking object files with corresponding libraries
+	@$(CC) -o $@ $^ $(LFLAGS)
+
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+	@echo [+] Compiling sources
+	$(CC) -c $^ $(CFLAGS) -o $@ -I $(INC_DIR)
+
+# Running flags
+run: $(BIN_DIR)/$(FINALEXE)
+	@echo [+] Executing binary
+	@./$<
+
+debug: $(BIN_DIR)/$(FINALEXE)
+	@echo [+] Executing binary with debugger
+	@$(DEBUGGER) $@
+
+memtest: $(BIN_DIR)/$(FINALEXE)
+	@echo [+] Executing binary with memory tester
+	@$(MEM_TESTER) $@
+
+clean:
+	@echo [+] Cleaning the project
+	@rm $(OBJ_FILES) $(BIN_DIR)/$(FINALEXE)

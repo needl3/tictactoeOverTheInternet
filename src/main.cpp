@@ -1,6 +1,4 @@
 #include "../headers/Game.hpp"
-#include <iostream>
-#include <any>
 
 int main()
 {
