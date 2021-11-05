@@ -14,6 +14,7 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 
 	private:
 		sf::RenderWindow *_window;
+		sf::Event *_events;
 		short _is_host = -1;	//-1-Not chosen		0-Host		1-Not Host
 		EstablishConnection *_connect;
 		enum {CONFIRM_HOST = 2};
@@ -30,6 +31,7 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 			_connect = new EstablishConnection(window, event,game);
 			_window = &window;
 			_game = &game;
+			_events = &event;
 
 			_rect.setPosition(0,_HEIGHT/4.0f);
 			_rect.setSize(sf::Vector2f(_WIDTH, _HEIGHT/2.0f));
@@ -76,7 +78,11 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 				_game->placeMove(_game->MOVE_MAP[move]);
 				_winner = _game->checkWinner();
 				if(_winner < 0)	_game->toggleTurn();
-				else _current_state = WINNER;
+				else{
+					_window->waitEvent(*_events);
+					if(_events->type == sf::Event::MouseButtonReleased)
+						_current_state = WINNER;
+				}
 			}else{
 				if(GameRenderer<TicTacToeOnline>::handleInput() == Menu){
 					_is_connected = false;

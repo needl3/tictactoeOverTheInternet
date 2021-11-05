@@ -103,16 +103,22 @@ class EstablishConnection{
 							_keyboard_stat = i;
 						}else if(!_rect.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePointer))
 						 and _keyboard_stat == i){
-							_items[i].color -= _items[i].color;						
+						 	if(i == URL_CONTAINER)
+								_items[i].color = _items[i+1].color;
+							else
+								_items[i].color = _items[i-1].color;
 							_keyboard_stat = BASE;
 						}
 					}
 					//Ok controller
 					if (_items[OK].posX < mousePointer.x and _items[OK].posX+_items[OK].sizeX > mousePointer.x
 						and  _items[OK].posY < mousePointer.y and _items[OK].posY+_items[OK].sizeY > mousePointer.y
-						and !_is_connecting){
+						and !_is_connecting
+						and _items[PORT_CONTAINER].label.size()){
 						_items[OK].label = "Connecting";
 						_items[OK].color += sf::Color(0,255,255,50);
+						render();
+						_window->display();
 						if(_connect())
 							return true;
 						else if(!_is_connecting){
@@ -138,7 +144,7 @@ class EstablishConnection{
 		void render(){
 			_updateEntities();
 			for(int i=BASE;i<=PORT_CONTAINER;i++){
-				sf::Color highlighting_color(50,50,50);
+				sf::Color highlighting_color(0,50,50);
 
 				_rect.setSize(sf::Vector2f(_items[i].sizeX, _items[i].sizeY));
 				_rect.setPosition(_items[i].posX, _items[i].posY);
