@@ -16,16 +16,18 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 	private:
 		sf::RenderWindow *_window;
 		sf::Event *_events;
-		short _is_host = -1;	//-1-Not chosen		0-Host		1-Not Host
 		EstablishConnection *_connect;
-		enum {CONFIRM_HOST = 2};
 		TicTacToeOnline *_game;
 
+		short _is_host = -1;	//-1-Not chosen		0-Host		1-Not Host
+		unsigned short character_size;
+
+		enum {CONFIRM_HOST = 2};
+		
 		//Resources for Waiting display
 		sf::RectangleShape _rect;
 		sf::Font _font;
 		sf::Text _text;
-		unsigned short character_size;
 
 	public:
 		COnline(sf::RenderWindow& window, sf::Event& event, TicTacToeOnline& game):GameRenderer(window, event, game){
@@ -39,11 +41,10 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 			_rect.setFillColor(sf::Color(10,10,10));
 
 			_font.loadFromFile(FONT_J);
-			character_size = _WIDTH/(_text.getString().getSize()+5);
-			character_size = 40;
+
+			character_size = _rect.getSize().y/9.0f;
 			_text.setString("Waiting for host to choose the turn...");
-			_text.setPosition((_WIDTH-_text.getString().getSize()*character_size)/2.0f, _rect.getPosition().y+character_size);
-			_text.setCharacterSize(character_size);
+			_text.setPosition(_rect.getPosition().x+character_size*12, _rect.getPosition().y+character_size*4);
 			_text.setFillColor(sf::Color(200,200,200));
 		}
 		GameState handleInput(){
@@ -81,8 +82,14 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 				if(_winner < 0)	_game->toggleTurn();
 				else{
 					_window->waitEvent(*_events);
-					if(_events->type == sf::Event::MouseButtonReleased)
+					if(_events->type == sf::Event::MouseButtonReleased){
+						if(_winner==_game->YOU)
+							_sound.setBuffer(_buf_win);
+						else
+							_sound.setBuffer(_buf_lose);
+						_sound.play();
 						_current_state = WINNER;
+					}
 				}
 			}else{
 				if(GameRenderer<TicTacToeOnline>::handleInput() == Menu){
@@ -110,8 +117,9 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 			}
 		}
 		void _renderWaiting(){
-			_window->draw(this->_rect);
+			_window->draw(_rect);
+
 			_text.setFont(_font);
-			_window->draw(this->_text);
+			_window->draw(_text);
 		}
 };

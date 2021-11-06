@@ -12,8 +12,6 @@ class GameRenderer{
 		sf::Event *_events;
 		T *_game;
 		
-		sf::SoundBuffer _buf_win, _buf_lose, _buf_move;
-		sf::Sound _sound;
 
 		sf::Texture _background_texture;
 		sf::Sprite _background_sprite;
@@ -47,16 +45,22 @@ class GameRenderer{
 
 
 	protected:
-		short _winner = -1;
-
-		enum _States {TURN_CHOOSER, PLAY_AGAIN, WINNER, GAME};
-		_States _current_state;
 
 		unsigned int _WIDTH, _HEIGHT;
+		short _winner = -1;
 		short _turn_chosen = -1;
 		bool _is_connected = false;
+
 		Chooser *_turn_chooser;
+
 		short getGridPosition(sf::Vector2i);
+
+		enum _States {TURN_CHOOSER, PLAY_AGAIN, WINNER, GAME};
+
+		_States _current_state;
+
+		sf::SoundBuffer _buf_win, _buf_lose, _buf_move;
+		sf::Sound _sound;
 
 	public:
 		GameRenderer(sf::RenderWindow&, sf::Event&, T& game);

@@ -149,10 +149,13 @@ void GameRenderer<T>::_renderWinner(){
 	_window->draw(_rect);
 
 	std::string winning_label = "You  ";
-	if(_game->turn == _game->YOU)
+	if(_game->turn == _game->YOU){
 		winning_label.insert(4,"Won");
-	else
+	}
+	else{
+		_text.setFillColor(sf::Color(200,0,0));
 		winning_label.insert(4,"Lost");
+	}
 	unsigned short character_size = _WIDTH/10.0f;
 	float x = (_WIDTH*0.3);
 	float y = _rect.getGlobalBounds().top+(_rect.getSize().y-character_size)/2.0f;
