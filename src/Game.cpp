@@ -10,7 +10,7 @@ Game::Game(){
 
 	_storeStates();
 
-	_currentState = Online;
+	_currentState = SplashScreen;
 }
 
 void Game::_storeStates(){
