@@ -51,9 +51,6 @@ void Game::_renderState(){
 		case Online:
 			std::any_cast<COnline>(&_GameMap[_currentState])->render();
 			break;
-		case Winner:
-			std::any_cast<CWinner>(&_GameMap[_currentState])->render();
-			break;
 		case Exit:
 			_window.close();
 		default:

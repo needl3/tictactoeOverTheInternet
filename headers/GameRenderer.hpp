@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameStates.hpp"
 #include "gamestates/Chooser.hpp"
-#include "gamestates/Winner.hpp"
+#include <SFML/Audio.hpp>
 #include <cmath>
 
 template <typename T>
@@ -12,6 +12,9 @@ class GameRenderer{
 		sf::Event *_events;
 		T *_game;
 		
+		sf::SoundBuffer _buf_win, _buf_lose, _buf_move;
+		sf::Sound _sound;
+
 		sf::Texture _background_texture;
 		sf::Sprite _background_sprite;
 

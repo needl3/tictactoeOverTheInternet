@@ -1,10 +1,17 @@
 #include "../headers/GameRenderer.hpp"
 #include "../headers/Tictactoe.hpp"
 #include "../headers/TictactoeOnline.hpp"
+#include "../headers/resources.hpp"
+
 template <typename T>
 GameRenderer<T>::GameRenderer(sf::RenderWindow& window, sf::Event& event, T& game){
 	_current_state = TURN_CHOOSER;
 	_game = &game;
+
+	_buf_win.loadFromFile(WINNER_S);
+	_buf_lose.loadFromFile(LOSER_S);
+	_buf_move.loadFromFile(MOVE_S);
+	
 	prepareData(window, event);
 }
 
@@ -19,8 +26,8 @@ void GameRenderer<T>::prepareData(sf::RenderWindow& window, sf::Event& event){
 	_WIDTH = _window->getSize().x;
 	_HEIGHT = _window->getSize().y;
 
-	_background_texture.loadFromFile("assets/pictures/background_play.jpg");
-	_txt_font.loadFromFile("assets/fonts/japanese.ttf");
+	_background_texture.loadFromFile(G_BACKGROUND);
+	_txt_font.loadFromFile(FONT_J);
 
 	//Defining constants
 	_item[CONNECTION].stat1 = "CONNECTED";
@@ -54,9 +61,18 @@ GameState GameRenderer<T>::handleInput(){
 					short position = getGridPosition(sf::Mouse::getPosition(*_window));
 					if(position>-1){
 						if(_game->placeMove(_game->MOVE_MAP[position])){
+							_sound.setBuffer(_buf_move);
+							_sound.play();
 							_winner = _game->checkWinner();
 							if(_winner < 0)	_game->toggleTurn();
-							else _current_state = WINNER;
+							else{
+								_current_state = WINNER;
+								if(_winner==_game->YOU)
+									_sound.setBuffer(_buf_win);
+								else
+									_sound.setBuffer(_buf_lose);
+								_sound.play();
+							}
 						}
 					}
 				}

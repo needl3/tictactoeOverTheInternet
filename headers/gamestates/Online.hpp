@@ -4,6 +4,7 @@
 #include "EstablishConnection.hpp"
 #include "Chooser.hpp"
 #include "../GameStates.hpp"
+#include "../resources.hpp"
 
 /*
 	To Solve:
@@ -37,7 +38,7 @@ class COnline: public GameRenderer<TicTacToeOnline>{
 			_rect.setSize(sf::Vector2f(_WIDTH, _HEIGHT/2.0f));
 			_rect.setFillColor(sf::Color(10,10,10));
 
-			_font.loadFromFile("assets/fonts/japanese.ttf");
+			_font.loadFromFile(FONT_J);
 			character_size = _WIDTH/(_text.getString().getSize()+5);
 			character_size = 40;
 			_text.setString("Waiting for host to choose the turn...");

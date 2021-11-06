@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "../GameStates.hpp"
+#include "../resources.hpp"
 #include <iostream>
 
 class Chooser{
@@ -30,7 +31,7 @@ class Chooser{
 			_window = window;
 			_events = event;
 
-			_txt_font.loadFromFile("assets/fonts/japanese.ttf");
+			_txt_font.loadFromFile(FONT_J);
 			_item[YE].label = "YE";
 			_item[NYE].label = "NYE";
 			

@@ -2,6 +2,8 @@
 
 #include "../Game.hpp"
 #include "../GameStates.hpp"
+#include "../resources.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <cmath>
@@ -65,17 +67,17 @@ class CMenu{
 				_face[i].texture.loadFromFile(picture_file);
 			}
 			
-			_background_texture.loadFromFile("assets/pictures/background.jpg");
+			_background_texture.loadFromFile(M_BACKGROUND);
 
 			//Loading Soundbuffers
-			_s_buffer_main->loadFromFile("assets/audio/theme.wav");
+			_s_buffer_main->loadFromFile(THEME_S);
 			_s_sound_main->setBuffer(*_s_buffer_main);
 			_s_sound_main->setLoop(true);
 
-			_s_buffer_option_hover->loadFromFile("assets/audio/hover.wav");
-			_s_buffer_clicked->loadFromFile("assets/audio/select.wav");
+			_s_buffer_option_hover->loadFromFile(HOVER_S);
+			_s_buffer_clicked->loadFromFile(SELECT_S);
 
-			_txt_font.loadFromFile("assets/fonts/japanese.ttf");
+			_txt_font.loadFromFile(FONT_J);
 
 			_items[_TITLE].r_size = sf::Vector2f(_WIDTH*0.8, _HEIGHT*0.2);
 			_items[_TITLE].r_position = sf::Vector2f(_WIDTH*0.2, 0);

@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "../GameStates.hpp"
+#include "../resources.hpp"
 #include "../TictactoeOnline.hpp"
 
 
@@ -78,7 +79,7 @@ class EstablishConnection{
 			_events = &event;
 			_game = &game;
 
-			_font.loadFromFile("assets/fonts/japanese.ttf");
+			_font.loadFromFile(FONT_J);
 			_items[URL_CONTAINER].color = sf::Color(20,30,30,50);
 			_items[PORT_CONTAINER].color = sf::Color(20,30,30,50);
 			_items[URL_CONTAINER].label = "";
